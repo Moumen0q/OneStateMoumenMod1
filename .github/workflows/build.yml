@@ -1,4 +1,4 @@
-```yaml
+yaml
 name: Build Tweak
 
 on: [push, pull_request]
@@ -34,4 +34,3 @@ jobs:
       with:
         name: OneStateMoumenMod-DYLIB
         path: .theos/obj/debug/
-```
