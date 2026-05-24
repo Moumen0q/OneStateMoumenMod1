@@ -55,13 +55,14 @@
 
 // Global switches dictionary
 extern NSMutableDictionary *switches;
+
 // Initialize switches
 void initializeSwitches(void);
 
 // Get/Set switch value
-BOOL isSwitchOn(NSString *key);
-void setSwitchValue(NSString *key, id value);
-id getSwitchValue(NSString *key);
+BOOL isSwitchOn(NSData *key);
+void setSwitchValue(NSData *key, id value);
+id getSwitchValue(NSData *key);
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 🎨 LOGGING MACROS (تسجيل الأخطاء)
@@ -98,7 +99,6 @@ static inline int clampi(int value, int min, int max) {
 // 💾 GLOBAL VARIABLES
 // ═══════════════════════════════════════════════════════════════════════════
 
-extern NSMutableDictionary *switches;
 extern BOOL modenabled;
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -111,29 +111,18 @@ extern BOOL modenabled;
 
 @interface MODMenuController : NSObject
 - (void)setupMenu;
-- (void)addHeaderWithTitle:(NSString *)title;
-- (void)addSectionWithTitle:(NSString *)title;
-- (void)addToggleWithTitle:(NSString *)title defaultValue:(BOOL)def;
-- (void)addSliderWithTitle:(NSString *)title minValue:(float)min maxValue:(float)max defaultValue:(float)def stepValue:(float)step;
-- (void)addLabelWithText:(NSString *)text;
+- (void)addHeaderWithTitle:(NSData *)title;
+- (void)addSectionWithTitle:(NSData *)title;
+- (void)addToggleWithTitle:(NSData *)title defaultValue:(BOOL)def;
+- (void)addSliderWithTitle:(NSData *)title minValue:(float)min maxValue:(float)max defaultValue:(float)def stepValue:(float)step;
+- (void)addLabelWithText:(NSData *)text;
 @end
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 🔧 PREFERENCES (حفظ التفضيلات)
+// 📦 PREFERENCES (حفظ التفضيلات)
 // ═══════════════════════════════════════════════════════════════════════════
 
 void savePreferences(void);
 void loadPreferences(void);
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 🚀 INITIALIZATION
-// ═══════════════════════════════════════════════════════════════════════════
-
-__attribute__((constructor))
-static void init_moumen_mod(void) {
-    LOG(@"One State - Moumen Mod Menu Initialized!");
-    initializeSwitches();
-    loadPreferences();
-}
 
 #endif /* Macros_h */
