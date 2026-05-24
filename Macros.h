@@ -19,50 +19,33 @@
 // 🔐 STRING ENCRYPTION MACRO (تشفير النصوص)
 // ═══════════════════════════════════════════════════════════════════════════
 
-// تشفير بسيط جداً للنصوص
-#define NSSENCRYPT(str) [@#str dataUsingEncoding:NSUTF8StringEncoding]
-
-// أو يمكنك استخدام هذا للنصوص العادية
+#define NSSENCRYPT(str) @str
 #define STRENCRYPT(str) (str)
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 🎯 MEMORY READ/WRITE MACROS
 // ═══════════════════════════════════════════════════════════════════════════
 
-// قراءة من الذاكرة
 #define ReadFloat(addr) (*(float*)addr)
 #define ReadInt(addr) (*(int*)addr)
 #define ReadBool(addr) (*(bool*)addr)
 #define ReadDouble(addr) (*(double*)addr)
 
-// كتابة في الذاكرة
 #define WriteFloat(addr, value) (*(float*)addr = value)
 #define WriteInt(addr, value) (*(int*)addr = value)
 #define WriteBool(addr, value) (*(bool*)addr = value)
 #define WriteDouble(addr, value) (*(double*)addr = value)
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 🪝 HOOK MACROS (بدائل للـ Hooks)
-// ═══════════════════════════════════════════════════════════════════════════
-
-// For function hooking
-#define HOOKFUNC(func) func##_original
-#define HOOK_ORIG(func) func##_original
-
-// ═══════════════════════════════════════════════════════════════════════════
 // 📊 SWITCH SYSTEM (نظام التبديل)
 // ═══════════════════════════════════════════════════════════════════════════
 
-// Global switches dictionary
 extern NSMutableDictionary *switches;
-
-// Initialize switches
 void initializeSwitches(void);
 
-// Get/Set switch value
-BOOL isSwitchOn(NSData *key);
-void setSwitchValue(NSData *key, id value);
-id getSwitchValue(NSData *key);
+BOOL isSwitchOn(NSString *key);
+void setSwitchValue(NSString *key, id value);
+id getSwitchValue(NSString *key);
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 🎨 LOGGING MACROS (تسجيل الأخطاء)
@@ -77,27 +60,17 @@ id getSwitchValue(NSData *key);
 // 🔧 UTILITY FUNCTIONS
 // ═══════════════════════════════════════════════════════════════════════════
 
-// String utilities
-#define STRINGIFY(x) #x
-#define TOSTRING(x) @#x
-
-// Float operations
 static inline float clamp(float value, float min, float max) {
     if (value < min) return min;
     if (value > max) return max;
     return value;
 }
 
-// Integer operations
 static inline int clampi(int value, int min, int max) {
     if (value < min) return min;
     if (value > max) return max;
     return value;
 }
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 💾 GLOBAL VARIABLES
-// ═══════════════════════════════════════════════════════════════════════════
 
 extern BOOL modenabled;
 
@@ -111,16 +84,12 @@ extern BOOL modenabled;
 
 @interface MODMenuController : NSObject
 - (void)setupMenu;
-- (void)addHeaderWithTitle:(NSData *)title;
-- (void)addSectionWithTitle:(NSData *)title;
-- (void)addToggleWithTitle:(NSData *)title defaultValue:(BOOL)def;
-- (void)addSliderWithTitle:(NSData *)title minValue:(float)min maxValue:(float)max defaultValue:(float)def stepValue:(float)step;
-- (void)addLabelWithText:(NSData *)text;
+- (void)addHeaderWithTitle:(NSString *)title;
+- (void)addSectionWithTitle:(NSString *)title;
+- (void)addToggleWithTitle:(NSString *)title defaultValue:(BOOL)def;
+- (void)addSliderWithTitle:(NSString *)title minValue:(float)min maxValue:(float)max defaultValue:(float)def stepValue:(float)step;
+- (void)addLabelWithText:(NSString *)text;
 @end
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 📦 PREFERENCES (حفظ التفضيلات)
-// ═══════════════════════════════════════════════════════════════════════════
 
 void savePreferences(void);
 void loadPreferences(void);
