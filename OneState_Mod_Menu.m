@@ -39,13 +39,17 @@
 
 void writeMemory(uint64_t offset, uint32_t value) {
     uint32_t *ptr = (uint32_t *)offset;
-    *ptr = value;
+    if (ptr != NULL) {
+        *ptr = value;
+    }
     asm volatile("" : : "r" (ptr) : "memory");
 }
 
 void writeMemoryFloat(uint64_t offset, float value) {
     float *ptr = (float *)offset;
-    *ptr = value;
+    if (ptr != NULL) {
+        *ptr = value;
+    }
     asm volatile("" : : "r" (ptr) : "memory");
 }
 
