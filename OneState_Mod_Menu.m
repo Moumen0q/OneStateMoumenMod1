@@ -3,13 +3,61 @@
 //  One State Mod Menu - Moumen Edition
 //
 //  Created by Moumen
-//  Based on Critical Ops Template
-//  Version 2.0
 //
 
 #import <stdint.h>
 #import <objc/runtime.h>
 #import "Macros.h"
+
+// القاموس العالمي لحفظ السويتشات والخيارات
+NSMutableDictionary *switches = nil;
+#define PLIST_PATH @"/var/mobile/Library/Preferences/com.moumen.onestate.plist"
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ⚙️ SWITCH SYSTEM & PREFERENCES IMPLEMENTATION (حل مشكلة الـ Linking)
+// ═══════════════════════════════════════════════════════════════════════════
+
+void initializeSwitches(void) {
+    if (switches == nil) {
+        switches = [[NSMutableDictionary alloc] init];
+    }
+}
+
+void savePreferences(void) {
+    if (switches != nil) {
+        [switches writeToFile:PLIST_PATH atomically:YES];
+    }
+}
+
+void loadPreferences(void) {
+    initializeSwitches();
+    NSMutableDictionary *saved = [NSMutableDictionary dictionaryWithContentsOfFile:PLIST_PATH];
+    if (saved != nil) {
+        switches = [saved mutableCopy];
+    }
+}
+
+BOOL isSwitchOn(NSString *key) {
+    if (switches == nil) return NO;
+    id val = [switches objectForKey:key];
+    if (val != nil) {
+        return [val boolValue];
+    }
+    return NO;
+}
+
+void setSwitchValue(NSString *key, id value) {
+    initializeSwitches();
+    if (key != nil && value != nil) {
+        [switches setObject:value forKey:key];
+        savePreferences(); // حفظ فوري عند التغيير
+    }
+}
+
+id getSwitchValue(NSString *key) {
+    if (switches == nil) return nil;
+    return [switches objectForKey:key];
+}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 🎮 ONE STATE - OFFSETS
@@ -35,7 +83,7 @@
 #define OFFSET_REWARD_PRIMARY       0x5867D
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 💾 MEMORY WRITE FUNCTION
+// 💾 MEMORY WRITE FUNCTIONS
 // ═══════════════════════════════════════════════════════════════════════════
 
 void writeMemory(uint64_t offset, uint32_t value) {
@@ -55,7 +103,7 @@ void writeMemoryFloat(uint64_t offset, float value) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 💰 MONEY & RESOURCES HOOKS
+// 🎮 GAME HOOKS LOGIC
 // ═══════════════════════════════════════════════════════════════════════════
 
 void UpdateMoney(void* _this) {
@@ -79,10 +127,6 @@ void UpdateMoney(void* _this) {
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// 👤 PLAYER STATS HOOKS
-// ═══════════════════════════════════════════════════════════════════════════
-
 void UpdateStats(void* _this) {
     if(_this != NULL) {
         if(isSwitchOn(NSSENCRYPT("⭐ رفع المستوى"))) {
@@ -101,10 +145,6 @@ void UpdateStats(void* _this) {
         }
     }
 }
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 🔫 WEAPON HOOKS
-// ═══════════════════════════════════════════════════════════════════════════
 
 void UpdateWeapon(void* _this) {
     if(_this != NULL) {
@@ -143,10 +183,6 @@ void UpdateWeapon(void* _this) {
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// 🚗 VEHICLE HOOKS
-// ═══════════════════════════════════════════════════════════════════════════
-
 void UpdateVehicle(void* _this) {
     if(_this != NULL) {
         if(isSwitchOn(NSSENCRYPT("🚗 فتح جميع السيارات"))) {
@@ -161,10 +197,6 @@ void UpdateVehicle(void* _this) {
         }
     }
 }
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 🎬 CAMERA & VIEW HOOKS
-// ═══════════════════════════════════════════════════════════════════════════
 
 void UpdateCamera(void* _this) {
     if(_this != NULL) {
@@ -183,7 +215,7 @@ void UpdateCamera(void* _this) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 🔄 RUNTIME SWIZZLING FOR GAMEPLAY UPDATE
+// 🔄 RUNTIME SWIZZLING (OBJECTIVE-C)
 // ═══════════════════════════════════════════════════════════════════════════
 
 static void (*orig_Gameplay_Update)(id self, SEL _cmd);
@@ -195,10 +227,6 @@ static void custom_Gameplay_Update(id self, SEL _cmd) {
     UpdateCamera((__bridge void*)self);
     orig_Gameplay_Update(self, _cmd);
 }
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 🔄 RUNTIME SWIZZLING FOR MENU SETUP
-// ═══════════════════════════════════════════════════════════════════════════
 
 static void (*orig_MODMenuController_setupMenu)(id self, SEL _cmd);
 static void custom_MODMenuController_setupMenu(id self, SEL _cmd) {
@@ -243,16 +271,14 @@ static void custom_MODMenuController_setupMenu(id self, SEL _cmd) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 🚀 CONSTRUCTOR - INITIALIZE HOOKS VIA OBJECTIVE-C RUNTIME
+// 🚀 CONSTRUCTOR
 // ═══════════════════════════════════════════════════════════════════════════
 
 __attribute__((constructor))
 static void init_moumen_mod(void) {
-    LOG("One State - Moumen Mod Menu Initialized Runtime Style!");
-    initializeSwitches();
+    LOG("One State - Moumen Mod Menu Initialized (All-In-One Edition)!");
     loadPreferences();
     
-    // Swizzling Gameplay Update
     Class gameplayClass = objc_getClass("Gameplay");
     if (gameplayClass) {
         Method origMethod = class_getInstanceMethod(gameplayClass, @selector(Update));
@@ -262,7 +288,6 @@ static void init_moumen_mod(void) {
         }
     }
     
-    // Swizzling MODMenuController setupMenu
     Class menuClass = objc_getClass("MODMenuController");
     if (menuClass) {
         Method origMethod = class_getInstanceMethod(menuClass, @selector(setupMenu));
