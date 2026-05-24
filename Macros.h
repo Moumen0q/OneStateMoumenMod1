@@ -55,7 +55,6 @@
 
 // Global switches dictionary
 extern NSMutableDictionary *switches;
-
 // Initialize switches
 void initializeSwitches(void);
 
@@ -68,10 +67,10 @@ id getSwitchValue(NSString *key);
 // 🎨 LOGGING MACROS (تسجيل الأخطاء)
 // ═══════════════════════════════════════════════════════════════════════════
 
-#define LOG(fmt, …) NSLog(@”[OneState Mod] “ fmt, ##**VA_ARGS**)
-#define ERROR(fmt, …) NSLog(@”[OneState Mod ERROR] “ fmt, ##**VA_ARGS**)
-#define WARNING(fmt, …) NSLog(@”[OneState Mod WARNING] “ fmt, ##**VA_ARGS**)
-#define SUCCESS(fmt, …) NSLog(@”[OneState Mod SUCCESS] “ fmt, ##**VA_ARGS**)
+#define LOG(fmt, ...) NSLog(@"[OneState Mod] " fmt, ##__VA_ARGS__)
+#define ERROR(fmt, ...) NSLog(@"[OneState Mod ERROR] " fmt, ##__VA_ARGS__)
+#define WARNING(fmt, ...) NSLog(@"[OneState Mod WARNING] " fmt, ##__VA_ARGS__)
+#define SUCCESS(fmt, ...) NSLog(@"[OneState Mod SUCCESS] " fmt, ##__VA_ARGS__)
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 🔧 UTILITY FUNCTIONS
@@ -83,16 +82,16 @@ id getSwitchValue(NSString *key);
 
 // Float operations
 static inline float clamp(float value, float min, float max) {
-if (value < min) return min;
-if (value > max) return max;
-return value;
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
 }
 
 // Integer operations
 static inline int clampi(int value, int min, int max) {
-if (value < min) return min;
-if (value > max) return max;
-return value;
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -107,22 +106,20 @@ extern BOOL modenabled;
 // ═══════════════════════════════════════════════════════════════════════════
 
 @interface Gameplay : NSObject
-
 - (void)Update;
-  @end
+@end
 
 @interface MODMenuController : NSObject
-
 - (void)setupMenu;
 - (void)addHeaderWithTitle:(NSString *)title;
 - (void)addSectionWithTitle:(NSString *)title;
 - (void)addToggleWithTitle:(NSString *)title defaultValue:(BOOL)def;
 - (void)addSliderWithTitle:(NSString *)title minValue:(float)min maxValue:(float)max defaultValue:(float)def stepValue:(float)step;
 - (void)addLabelWithText:(NSString *)text;
-  @end
+@end
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 📦 PREFERENCES (حفظ التفضيلات)
+// 🔧 PREFERENCES (حفظ التفضيلات)
 // ═══════════════════════════════════════════════════════════════════════════
 
 void savePreferences(void);
@@ -132,11 +129,11 @@ void loadPreferences(void);
 // 🚀 INITIALIZATION
 // ═══════════════════════════════════════════════════════════════════════════
 
-**attribute**((constructor))
+__attribute__((constructor))
 static void init_moumen_mod(void) {
-LOG(@“One State - Moumen Mod Menu Initialized!”);
-initializeSwitches();
-loadPreferences();
+    LOG(@"One State - Moumen Mod Menu Initialized!");
+    initializeSwitches();
+    loadPreferences();
 }
 
 #endif /* Macros_h */
