@@ -7,3 +7,13 @@ Maintainer: Moumen
 Section: Tweaks
 Description: 
  One State Moumen Professional Mod Menu v2.0
+ 
+ مميزات:
+ ✅ تعديل المال والنقود
+ ✅ رفع المستوى والـ XP
+ ✅ صحة ودرع كاملة
+ ✅ أسلحة وذخيرة لا محدودة
+ ✅ وأكثر بكثير!
+
+Depends: mobilesubstrate
+Architecture: iphoneos-arm64
