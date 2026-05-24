@@ -1,4 +1,4 @@
-yaml
+```yaml
 name: Build Tweak
 
 on: [push, pull_request]
@@ -8,7 +8,7 @@ jobs:
     runs-on: macos-latest
     
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
     
     - name: Install dependencies
       run: |
@@ -24,13 +24,14 @@ jobs:
         make
     
     - name: Upload DEB artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: OneStateMoumenMod-DEB
         path: packages/*.deb
         
     - name: Upload Dylib artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: OneStateMoumenMod-DYLIB
         path: .theos/obj/debug/
+```
