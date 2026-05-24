@@ -8,6 +8,7 @@
 //
 
 #import <stdint.h>
+#import <objc/runtime.h>
 #import "Macros.h"
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -57,325 +58,217 @@ void writeMemoryFloat(uint64_t offset, float value) {
 // 💰 MONEY & RESOURCES HOOKS
 // ═══════════════════════════════════════════════════════════════════════════
 
-void(*old_UpdateMoney)(void* _this);
 void UpdateMoney(void* _this) {
     if(_this != NULL) {
-        // تعديل المال
         if(isSwitchOn(NSSENCRYPT("💰 تعديل المال"))) {
             int money = [getSwitchValue(NSSENCRYPT("💰 تعديل المال")) intValue];
             writeMemory(OFFSET_MONEY_PRIMARY, money);
         }
-        
-        // تعديل النقود
         if(isSwitchOn(NSSENCRYPT("💎 تعديل النقود"))) {
             int cash = [getSwitchValue(NSSENCRYPT("💎 تعديل النقود")) intValue];
             writeMemory(OFFSET_CASH_PRIMARY, cash);
         }
-        
-        // تعديل العملات
         if(isSwitchOn(NSSENCRYPT("⭐ العملات"))) {
             int coins = [getSwitchValue(NSSENCRYPT("⭐ العملات")) intValue];
             writeMemory(OFFSET_COIN_PRIMARY, coins);
         }
-        
-        // جوائز
         if(isSwitchOn(NSSENCRYPT("🎁 المكافآت"))) {
             int rewards = [getSwitchValue(NSSENCRYPT("🎁 المكافآت")) intValue];
             writeMemory(OFFSET_REWARD_PRIMARY, rewards);
         }
     }
-    return old_UpdateMoney(_this);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 👤 PLAYER STATS HOOKS
 // ═══════════════════════════════════════════════════════════════════════════
 
-void(*old_UpdateStats)(void* _this);
 void UpdateStats(void* _this) {
     if(_this != NULL) {
-        // تعديل المستوى
         if(isSwitchOn(NSSENCRYPT("⭐ رفع المستوى"))) {
             int level = [getSwitchValue(NSSENCRYPT("⭐ رفع المستوى")) intValue];
             writeMemory(OFFSET_LEVEL_PRIMARY, level);
         }
-        
-        // تعديل XP
         if(isSwitchOn(NSSENCRYPT("🎯 تعديل XP"))) {
             int xp = [getSwitchValue(NSSENCRYPT("🎯 تعديل XP")) intValue];
             writeMemory(OFFSET_XP_PRIMARY, xp);
         }
-        
-        // الصحة
         if(isSwitchOn(NSSENCRYPT("❤️ صحة كاملة"))) {
             writeMemory(OFFSET_HEALTH_PRIMARY, 100);
         }
-        
-        // الدرع
         if(isSwitchOn(NSSENCRYPT("🛡️ درع كامل"))) {
             writeMemory(OFFSET_ARMOR_PRIMARY, 100);
         }
     }
-    return old_UpdateStats(_this);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 🔫 WEAPON HOOKS
 // ═══════════════════════════════════════════════════════════════════════════
 
-int GetWeaponID(void *weapon) {
-    return *(int*)((uint64_t)weapon + 0x18);
-}
-
-void(*old_UpdateWeapon)(void* _this);
 void UpdateWeapon(void* _this) {
     if(_this != NULL) {
         void* m_data = *(void **)((uint64_t)_this + 0x98);
-        void* m_wpn = *(void **)((uint64_t)m_data + 0x80);
-        
-        if (m_wpn) {
-            // ذخيرة لا محدودة
-            if(isSwitchOn(NSSENCRYPT("💥 ذخيرة لا محدودة"))) {
-                *(bool *) ((uint64_t)m_wpn + 0x94) = 0;
-            }
-            
-            // إعادة تحميل فورية
-            if(isSwitchOn(NSSENCRYPT("⚡ إعادة تحميل فورية"))) {
-                *(float *) ((uint64_t)m_wpn + 0x84) = 0.0f;
-            }
-            
-            // بدون ارتجاج
-            if(isSwitchOn(NSSENCRYPT("🎯 بدون ارتجاج"))) {
-                *(float *) ((uint64_t)m_wpn + 0x108) = 1000.0f;
-            }
-            
-            // تعديل الضرر
-            if(isSwitchOn(NSSENCRYPT("💔 تعديل الضرر"))) {
-                float damage = [getSwitchValue(NSSENCRYPT("💔 تعديل الضرر")) floatValue];
-                *(float *) ((uint64_t)m_wpn + 0x4C) = damage;
-                *(float *) ((uint64_t)m_wpn + 0x50) = damage;
-            }
-            
-            // سرعة الطلقات
-            if(isSwitchOn(NSSENCRYPT("🔥 سرعة الطلقات"))) {
-                float firerate = [getSwitchValue(NSSENCRYPT("🔥 سرعة الطلقات")) floatValue];
-                *(float *) ((uint64_t)m_wpn + 0x64) = firerate;
-            }
-            
-            // مدى الضرب
-            if(isSwitchOn(NSSENCRYPT("🎪 مدى الضرب 100م"))) {
-                *(float *) ((uint64_t)m_wpn + 0x60) = 100.0f;
-            } else {
-                *(float *) ((uint64_t)m_wpn + 0x60) = 1.649999976158142f;
-            }
-            
-            // انفجار
-            if(isSwitchOn(NSSENCRYPT("💣 إطلاق متفجر"))) {
-                *(int *) ((uint64_t)m_wpn + 0x68) = 90;
+        if (m_data != NULL) {
+            void* m_wpn = *(void **)((uint64_t)m_data + 0x80);
+            if (m_wpn != NULL) {
+                if(isSwitchOn(NSSENCRYPT("💥 ذخيرة لا محدودة"))) {
+                    *(bool *) ((uint64_t)m_wpn + 0x94) = 0;
+                }
+                if(isSwitchOn(NSSENCRYPT("⚡ إعادة تحميل فورية"))) {
+                    *(float *) ((uint64_t)m_wpn + 0x84) = 0.0f;
+                }
+                if(isSwitchOn(NSSENCRYPT("🎯 بدون ارتجاج"))) {
+                    *(float *) ((uint64_t)m_wpn + 0x108) = 1000.0f;
+                }
+                if(isSwitchOn(NSSENCRYPT("💔 تعديل الضرر"))) {
+                    float damage = [getSwitchValue(NSSENCRYPT("💔 تعديل الضرر")) floatValue];
+                    *(float *) ((uint64_t)m_wpn + 0x4C) = damage;
+                    *(float *) ((uint64_t)m_wpn + 0x50) = damage;
+                }
+                if(isSwitchOn(NSSENCRYPT("🔥 سرعة الطلقات"))) {
+                    float firerate = [getSwitchValue(NSSENCRYPT("🔥 سرعة الطلقات")) floatValue];
+                    *(float *) ((uint64_t)m_wpn + 0x64) = firerate;
+                }
+                if(isSwitchOn(NSSENCRYPT("🎪 مدى الضرب 100م"))) {
+                    *(float *) ((uint64_t)m_wpn + 0x60) = 100.0f;
+                } else {
+                    *(float *) ((uint64_t)m_wpn + 0x60) = 1.649999976158142f;
+                }
+                if(isSwitchOn(NSSENCRYPT("💣 إطلاق متفجر"))) {
+                    *(int *) ((uint64_t)m_wpn + 0x68) = 90;
+                }
             }
         }
     }
-    return old_UpdateWeapon(_this);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 🚗 VEHICLE HOOKS
 // ═══════════════════════════════════════════════════════════════════════════
 
-void(*old_UpdateVehicle)(void* _this);
 void UpdateVehicle(void* _this) {
     if(_this != NULL) {
-        // فتح السيارات
         if(isSwitchOn(NSSENCRYPT("🚗 فتح جميع السيارات"))) {
             writeMemory(OFFSET_VEHICLE_PRIMARY, 10);
         }
-        
-        // إصلاح السيارة
         if(isSwitchOn(NSSENCRYPT("🔧 إصلاح السيارة"))) {
             writeMemory(OFFSET_REPAIR_PRIMARY, 100);
         }
-        
-        // سرعة السيارة
         if(isSwitchOn(NSSENCRYPT("⚡ سرعة السيارة"))) {
             int speed = [getSwitchValue(NSSENCRYPT("⚡ سرعة السيارة")) intValue];
             writeMemory(OFFSET_SPEED_PRIMARY, speed);
         }
     }
-    return old_UpdateVehicle(_this);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 🎬 CAMERA & VIEW HOOKS
 // ═══════════════════════════════════════════════════════════════════════════
 
-void(*old_UpdateCamera)(void* _this);
 void UpdateCamera(void* _this) {
     if(_this != NULL) {
         void* m_profile = *(void **)((uint64_t)_this + 0x20);
         if(m_profile) {
-            // تعديل FOV
             if(isSwitchOn(NSSENCRYPT("👁️ تعديل FOV"))) {
                 float fov = [getSwitchValue(NSSENCRYPT("👁️ تعديل FOV")) floatValue];
                 *(float *) ((uint64_t)m_profile + 0x40) = fov;
             }
-            
-            // ارتفاع الكاميرا
             if(isSwitchOn(NSSENCRYPT("📷 ارتفاع الكاميرا"))) {
                 float height = [getSwitchValue(NSSENCRYPT("📷 ارتفاع الكاميرا")) floatValue];
                 *(float *) ((uint64_t)m_profile + 0x44) = height;
             }
         }
     }
-    return old_UpdateCamera(_this);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 🪝 HOOKS REGISTRATION
+// 🔄 RUNTIME SWIZZLING FOR GAMEPLAY UPDATE
 // ═══════════════════════════════════════════════════════════════════════════
 
-%hook Gameplay
-
-- (void)Update {
-    UpdateMoney(self);
-    UpdateStats(self);
-    UpdateWeapon(self);
-    UpdateVehicle(self);
-    UpdateCamera(self);
-    %orig;
+static void (*orig_Gameplay_Update)(id self, SEL _cmd);
+static void custom_Gameplay_Update(id self, SEL _cmd) {
+    UpdateMoney((__bridge void*)self);
+    UpdateStats((__bridge void*)self);
+    UpdateWeapon((__bridge void*)self);
+    UpdateVehicle((__bridge void*)self);
+    UpdateCamera((__bridge void*)self);
+    orig_Gameplay_Update(self, _cmd);
 }
-%end
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 🎨 MOD MENU INTERFACE
+// 🔄 RUNTIME SWIZZLING FOR MENU SETUP
 // ═══════════════════════════════════════════════════════════════════════════
 
-%hook MODMenuController
-
-- (void)setupMenu {
-    %orig;
+static void (*orig_MODMenuController_setupMenu)(id self, SEL _cmd);
+static void custom_MODMenuController_setupMenu(id self, SEL _cmd) {
+    orig_MODMenuController_setupMenu(self, _cmd);
     
-    // عنوان القائمة
     [self addHeaderWithTitle:NSSENCRYPT("🎮 One State - Moumen Mod Menu v2.0")];
     
-    // ═══════════════════════════════════════════════════════════════════════════
-    // 💰 قسم المال والموارد
-    // ═══════════════════════════════════════════════════════════════════════════
     [self addSectionWithTitle:NSSENCRYPT("💰 المال والموارد")];
-    [self addSliderWithTitle:NSSENCRYPT("💰 تعديل المال")
-                    minValue:0
-                    maxValue:999999
-                defaultValue:999999
-                   stepValue:1000];
-                   
-    [self addSliderWithTitle:NSSENCRYPT("💎 تعديل النقود")
-                    minValue:0
-                    maxValue:99999
-                defaultValue:99999
-                   stepValue:100];
-                   
-    [self addSliderWithTitle:NSSENCRYPT("⭐ العملات")
-                    minValue:0
-                    maxValue:999999
-                defaultValue:999999
-                   stepValue:1000];
-                   
-    [self addSliderWithTitle:NSSENCRYPT("🎁 المكافآت")
-                    minValue:0
-                    maxValue:99999
-                defaultValue:99999
-                   stepValue:100];
-                   
-    // ═══════════════════════════════════════════════════════════════════════════
-    // 👤 قسم إحصائيات اللاعب
-    // ═══════════════════════════════════════════════════════════════════════════
+    [self addSliderWithTitle:NSSENCRYPT("💰 تعديل المال") minValue:0 maxValue:999999 defaultValue:999999 stepValue:1000];
+    [self addSliderWithTitle:NSSENCRYPT("💎 تعديل النقود") minValue:0 maxValue:99999 defaultValue:99999 stepValue:100];
+    [self addSliderWithTitle:NSSENCRYPT("⭐ العملات") minValue:0 maxValue:999999 defaultValue:999999 stepValue:1000];
+    [self addSliderWithTitle:NSSENCRYPT("🎁 المكافآت") minValue:0 maxValue:99999 defaultValue:99999 stepValue:100];
+    
     [self addSectionWithTitle:NSSENCRYPT("👤 إحصائيات اللاعب")];
-    [self addSliderWithTitle:NSSENCRYPT("⭐ رفع المستوى")
-                    minValue:1
-                    maxValue:99
-                defaultValue:99
-                   stepValue:1];
-                   
-    [self addSliderWithTitle:NSSENCRYPT("🎯 تعديل XP")
-                    minValue:0
-                    maxValue:9999999
-                defaultValue:9999999
-                   stepValue:10000];
-                   
-    [self addToggleWithTitle:NSSENCRYPT("❤️ صحة كاملة")
-                defaultValue:YES];
-                
-    [self addToggleWithTitle:NSSENCRYPT("🛡️ درع كامل")
-                defaultValue:YES];
-                
-    // ═══════════════════════════════════════════════════════════════════════════
-    // 🔫 قسم الأسلحة
-    // ═══════════════════════════════════════════════════════════════════════════
+    [self addSliderWithTitle:NSSENCRYPT("⭐ رفع المستوى") minValue:1 maxValue:99 defaultValue:99 stepValue:1];
+    [self addSliderWithTitle:NSSENCRYPT("🎯 تعديل XP") minValue:0 maxValue:9999999 defaultValue:9999999 stepValue:10000];
+    [self addToggleWithTitle:NSSENCRYPT("❤️ صحة كاملة") defaultValue:YES];
+    [self addToggleWithTitle:NSSENCRYPT("🛡️ درع كامل") defaultValue:YES];
+    
     [self addSectionWithTitle:NSSENCRYPT("🔫 الأسلحة والذخيرة")];
-    [self addToggleWithTitle:NSSENCRYPT("💥 ذخيرة لا محدودة")
-                defaultValue:YES];
-                
-    [self addToggleWithTitle:NSSENCRYPT("⚡ إعادة تحميل فورية")
-                defaultValue:YES];
-                
-    [self addToggleWithTitle:NSSENCRYPT("🎯 بدون ارتجاج")
-                defaultValue:YES];
-                
-    [self addSliderWithTitle:NSSENCRYPT("💔 تعديل الضرر")
-                    minValue:1
-                    maxValue:200
-                defaultValue:50
-                   stepValue:1];
-                   
-    [self addSliderWithTitle:NSSENCRYPT("🔥 سرعة الطلقات")
-                    minValue:100
-                    maxValue:1500
-                defaultValue:100
-                   stepValue:50];
-                   
-    [self addToggleWithTitle:NSSENCRYPT("🎪 مدى الضرب 100م")
-                defaultValue:NO];
-                
-    [self addToggleWithTitle:NSSENCRYPT("💣 إطلاق متفجر")
-                defaultValue:NO];
-                
-    // ═══════════════════════════════════════════════════════════════════════════
-    // 🚗 قسم السيارات
-    // ═══════════════════════════════════════════════════════════════════════════
+    [self addToggleWithTitle:NSSENCRYPT("💥 ذخيرة لا محدودة") defaultValue:YES];
+    [self addToggleWithTitle:NSSENCRYPT("⚡ إعادة تحميل فورية") defaultValue:YES];
+    [self addToggleWithTitle:NSSENCRYPT("🎯 بدون ارتجاج") defaultValue:YES];
+    [self addSliderWithTitle:NSSENCRYPT("💔 تعديل الضرر") minValue:1 maxValue:200 defaultValue:50 stepValue:1];
+    [self addSliderWithTitle:NSSENCRYPT("🔥 سرعة الطلقات") minValue:100 maxValue:1500 defaultValue:100 stepValue:50];
+    [self addToggleWithTitle:NSSENCRYPT("🎪 مدى الضرب 100م") defaultValue:NO];
+    [self addToggleWithTitle:NSSENCRYPT("💣 إطلاق متفجر") defaultValue:NO];
+    
     [self addSectionWithTitle:NSSENCRYPT("🚗 السيارات")];
-    [self addToggleWithTitle:NSSENCRYPT("🚗 فتح جميع السيارات")
-                defaultValue:NO];
-                
-    [self addToggleWithTitle:NSSENCRYPT("🔧 إصلاح السيارة")
-                defaultValue:NO];
-                
-    [self addSliderWithTitle:NSSENCRYPT("⚡ سرعة السيارة")
-                    minValue:1
-                    maxValue:50
-                defaultValue:1
-                   stepValue:1];
-                   
-    // ═══════════════════════════════════════════════════════════════════════════
-    // 👁️ قسم الكاميرا والعرض
-    // ═══════════════════════════════════════════════════════════════════════════
+    [self addToggleWithTitle:NSSENCRYPT("🚗 فتح جميع السيارات") defaultValue:NO];
+    [self addToggleWithTitle:NSSENCRYPT("🔧 إصلاح السيارة") defaultValue:NO];
+    [self addSliderWithTitle:NSSENCRYPT("⚡ سرعة السيارة") minValue:1 maxValue:50 defaultValue:1 stepValue:1];
+    
     [self addSectionWithTitle:NSSENCRYPT("👁️ الكاميرا والعرض")];
-    [self addSliderWithTitle:NSSENCRYPT("👁️ تعديل FOV")
-                    minValue:25
-                    maxValue:155
-                defaultValue:60
-                   stepValue:5];
-                   
-    [self addSliderWithTitle:NSSENCRYPT("📷 ارتفاع الكاميرا")
-                    minValue:-10
-                    maxValue:25
-                defaultValue:0
-                   stepValue:1];
-                   
-    // ═══════════════════════════════════════════════════════════════════════════
-    // 📌 قسم المعلومات
-    // ═══════════════════════════════════════════════════════════════════════════
+    [self addSliderWithTitle:NSSENCRYPT("👁️ تعديل FOV") minValue:25 maxValue:155 defaultValue:60 stepValue:5];
+    [self addSliderWithTitle:NSSENCRYPT("📷 ارتفاع الكاميرا") minValue:-10 maxValue:25 defaultValue:0 stepValue:1];
+    
     [self addSectionWithTitle:NSSENCRYPT("📌 معلومات")];
     [self addLabelWithText:NSSENCRYPT("One State Mod Menu v2.0")];
     [self addLabelWithText:NSSENCRYPT("Created by Moumen")];
     [self addLabelWithText:NSSENCRYPT("All features working 100%")];
 }
-%end
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 🚀 CONSTRUCTOR - INITIALIZE HOOKS VIA OBJECTIVE-C RUNTIME
+// ═══════════════════════════════════════════════════════════════════════════
+
+__attribute__((constructor))
+static void init_moumen_mod(void) {
+    LOG("One State - Moumen Mod Menu Initialized Runtime Style!");
+    initializeSwitches();
+    loadPreferences();
+    
+    // Swizzling Gameplay Update
+    Class gameplayClass = objc_getClass("Gameplay");
+    if (gameplayClass) {
+        Method origMethod = class_getInstanceMethod(gameplayClass, @selector(Update));
+        if (origMethod) {
+            orig_Gameplay_Update = (void *)method_getImplementation(origMethod);
+            method_setImplementation(origMethod, (IMP)custom_Gameplay_Update);
+        }
+    }
+    
+    // Swizzling MODMenuController setupMenu
+    Class menuClass = objc_getClass("MODMenuController");
+    if (menuClass) {
+        Method origMethod = class_getInstanceMethod(menuClass, @selector(setupMenu));
+        if (origMethod) {
+            orig_MODMenuController_setupMenu = (void *)method_getImplementation(origMethod);
+            method_setImplementation(origMethod, (IMP)custom_MODMenuController_setupMenu);
+        }
+    }
+}
