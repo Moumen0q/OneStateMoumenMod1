@@ -8,7 +8,7 @@ jobs:
     runs-on: macos-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Install dependencies
       run: |
@@ -24,13 +24,13 @@ jobs:
         make
     
     - name: Upload DEB artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: OneStateMoumenMod-DEB
         path: packages/*.deb
         
     - name: Upload Dylib artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: OneStateMoumenMod-DYLIB
         path: .theos/obj/debug/
