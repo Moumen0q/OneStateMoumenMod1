@@ -57,26 +57,26 @@ void(*old_UpdateMoney)(void* _this);
 void UpdateMoney(void* _this) {
     if(_this != NULL) {
         // تعديل المال
-        if([switches isSwitchOn:NSSENCRYPT("💰 تعديل المال")]) {
-            int money = [[switches getValueFromSwitch:NSSENCRYPT("💰 تعديل المال")] intValue];
+        if(isSwitchOn(NSSENCRYPT("💰 تعديل المال"))) {
+            int money = [getSwitchValue(NSSENCRYPT("💰 تعديل المال")) intValue];
             writeMemory(OFFSET_MONEY_PRIMARY, money);
         }
         
         // تعديل النقود
-        if([switches isSwitchOn:NSSENCRYPT("💎 تعديل النقود")]) {
-            int cash = [[switches getValueFromSwitch:NSSENCRYPT("💎 تعديل النقود")] intValue];
+        if(isSwitchOn(NSSENCRYPT("💎 تعديل النقود"))) {
+            int cash = [getSwitchValue(NSSENCRYPT("💎 تعديل النقود")) intValue];
             writeMemory(OFFSET_CASH_PRIMARY, cash);
         }
         
         // تعديل العملات
-        if([switches isSwitchOn:NSSENCRYPT("⭐ العملات")]) {
-            int coins = [[switches getValueFromSwitch:NSSENCRYPT("⭐ العملات")] intValue];
+        if(isSwitchOn(NSSENCRYPT("⭐ العملات"))) {
+            int coins = [getSwitchValue(NSSENCRYPT("⭐ العملات")) intValue];
             writeMemory(OFFSET_COIN_PRIMARY, coins);
         }
         
         // جوائز
-        if([switches isSwitchOn:NSSENCRYPT("🎁 المكافآت")]) {
-            int rewards = [[switches getValueFromSwitch:NSSENCRYPT("🎁 المكافآت")] intValue];
+        if(isSwitchOn(NSSENCRYPT("🎁 المكافآت"))) {
+            int rewards = [getSwitchValue(NSSENCRYPT("🎁 المكافآت")) intValue];
             writeMemory(OFFSET_REWARD_PRIMARY, rewards);
         }
     }
@@ -91,24 +91,24 @@ void(*old_UpdateStats)(void* _this);
 void UpdateStats(void* _this) {
     if(_this != NULL) {
         // تعديل المستوى
-        if([switches isSwitchOn:NSSENCRYPT("⭐ رفع المستوى")]) {
-            int level = [[switches getValueFromSwitch:NSSENCRYPT("⭐ رفع المستوى")] intValue];
+        if(isSwitchOn(NSSENCRYPT("⭐ رفع المستوى"))) {
+            int level = [getSwitchValue(NSSENCRYPT("⭐ رفع المستوى")) intValue];
             writeMemory(OFFSET_LEVEL_PRIMARY, level);
         }
         
         // تعديل XP
-        if([switches isSwitchOn:NSSENCRYPT("🎯 تعديل XP")]) {
-            int xp = [[switches getValueFromSwitch:NSSENCRYPT("🎯 تعديل XP")] intValue];
+        if(isSwitchOn(NSSENCRYPT("🎯 تعديل XP"))) {
+            int xp = [getSwitchValue(NSSENCRYPT("🎯 تعديل XP")) intValue];
             writeMemory(OFFSET_XP_PRIMARY, xp);
         }
         
         // الصحة
-        if([switches isSwitchOn:NSSENCRYPT("❤️ صحة كاملة")]) {
+        if(isSwitchOn(NSSENCRYPT("❤️ صحة كاملة"))) {
             writeMemory(OFFSET_HEALTH_PRIMARY, 100);
         }
         
         // الدرع
-        if([switches isSwitchOn:NSSENCRYPT("🛡️ درع كامل")]) {
+        if(isSwitchOn(NSSENCRYPT("🛡️ درع كامل"))) {
             writeMemory(OFFSET_ARMOR_PRIMARY, 100);
         }
     }
@@ -131,42 +131,42 @@ void UpdateWeapon(void* _this) {
         
         if (m_wpn) {
             // ذخيرة لا محدودة
-            if([switches isSwitchOn:NSSENCRYPT("💥 ذخيرة لا محدودة")]) {
+            if(isSwitchOn(NSSENCRYPT("💥 ذخيرة لا محدودة"))) {
                 *(bool *) ((uint64_t)m_wpn + 0x94) = 0;
             }
             
             // إعادة تحميل فورية
-            if([switches isSwitchOn:NSSENCRYPT("⚡ إعادة تحميل فورية")]) {
+            if(isSwitchOn(NSSENCRYPT("⚡ إعادة تحميل فورية"))) {
                 *(float *) ((uint64_t)m_wpn + 0x84) = 0.0f;
             }
             
             // بدون ارتجاج
-            if([switches isSwitchOn:NSSENCRYPT("🎯 بدون ارتجاج")]) {
+            if(isSwitchOn(NSSENCRYPT("🎯 بدون ارتجاج"))) {
                 *(float *) ((uint64_t)m_wpn + 0x108) = 1000.0f;
             }
             
             // تعديل الضرر
-            if([switches isSwitchOn:NSSENCRYPT("💔 تعديل الضرر")]) {
-                float damage = [[switches getValueFromSwitch:NSSENCRYPT("💔 تعديل الضرر")] floatValue];
+            if(isSwitchOn(NSSENCRYPT("💔 تعديل الضرر"))) {
+                float damage = [getSwitchValue(NSSENCRYPT("💔 تعديل الضرر")) floatValue];
                 *(float *) ((uint64_t)m_wpn + 0x4C) = damage;
                 *(float *) ((uint64_t)m_wpn + 0x50) = damage;
             }
             
             // سرعة الطلقات
-            if([switches isSwitchOn:NSSENCRYPT("🔥 سرعة الطلقات")]) {
-                float firerate = [[switches getValueFromSwitch:NSSENCRYPT("🔥 سرعة الطلقات")] floatValue];
+            if(isSwitchOn(NSSENCRYPT("🔥 سرعة الطلقات"))) {
+                float firerate = [getSwitchValue(NSSENCRYPT("🔥 سرعة الطلقات")) floatValue];
                 *(float *) ((uint64_t)m_wpn + 0x64) = firerate;
             }
             
             // مدى الضرب
-            if([switches isSwitchOn:NSSENCRYPT("🎪 مدى الضرب 100م")]) {
+            if(isSwitchOn(NSSENCRYPT("🎪 مدى الضرب 100م"))) {
                 *(float *) ((uint64_t)m_wpn + 0x60) = 100.0f;
             } else {
                 *(float *) ((uint64_t)m_wpn + 0x60) = 1.649999976158142f;
             }
             
             // انفجار
-            if([switches isSwitchOn:NSSENCRYPT("💣 إطلاق متفجر")]) {
+            if(isSwitchOn(NSSENCRYPT("💣 إطلاق متفجر"))) {
                 *(int *) ((uint64_t)m_wpn + 0x68) = 90;
             }
         }
@@ -182,18 +182,18 @@ void(*old_UpdateVehicle)(void* _this);
 void UpdateVehicle(void* _this) {
     if(_this != NULL) {
         // فتح السيارات
-        if([switches isSwitchOn:NSSENCRYPT("🚗 فتح جميع السيارات")]) {
+        if(isSwitchOn(NSSENCRYPT("🚗 فتح جميع السيارات"))) {
             writeMemory(OFFSET_VEHICLE_PRIMARY, 10);
         }
         
         // إصلاح السيارة
-        if([switches isSwitchOn:NSSENCRYPT("🔧 إصلاح السيارة")]) {
+        if(isSwitchOn(NSSENCRYPT("🔧 إصلاح السيارة"))) {
             writeMemory(OFFSET_REPAIR_PRIMARY, 100);
         }
         
         // سرعة السيارة
-        if([switches isSwitchOn:NSSENCRYPT("⚡ سرعة السيارة")]) {
-            int speed = [[switches getValueFromSwitch:NSSENCRYPT("⚡ سرعة السيارة")] intValue];
+        if(isSwitchOn(NSSENCRYPT("⚡ سرعة السيارة"))) {
+            int speed = [getSwitchValue(NSSENCRYPT("⚡ سرعة السيارة")) intValue];
             writeMemory(OFFSET_SPEED_PRIMARY, speed);
         }
     }
@@ -210,14 +210,14 @@ void UpdateCamera(void* _this) {
         void* m_profile = *(void **)((uint64_t)_this + 0x20);
         if(m_profile) {
             // تعديل FOV
-            if([switches isSwitchOn:NSSENCRYPT("👁️ تعديل FOV")]) {
-                float fov = [[switches getValueFromSwitch:NSSENCRYPT("👁️ تعديل FOV")] floatValue];
+            if(isSwitchOn(NSSENCRYPT("👁️ تعديل FOV"))) {
+                float fov = [getSwitchValue(NSSENCRYPT("👁️ تعديل FOV")) floatValue];
                 *(float *) ((uint64_t)m_profile + 0x40) = fov;
             }
             
             // ارتفاع الكاميرا
-            if([switches isSwitchOn:NSSENCRYPT("📷 ارتفاع الكاميرا")]) {
-                float height = [[switches getValueFromSwitch:NSSENCRYPT("📷 ارتفاع الكاميرا")] floatValue];
+            if(isSwitchOn(NSSENCRYPT("📷 ارتفاع الكاميرا"))) {
+                float height = [getSwitchValue(NSSENCRYPT("📷 ارتفاع الكاميرا")) floatValue];
                 *(float *) ((uint64_t)m_profile + 0x44) = height;
             }
         }
